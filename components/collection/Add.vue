@@ -1,6 +1,6 @@
 <template>
   <!-- v-else-if="open" -->
-  <div>
+  <div  v-if="open">
     <TransitionRoot as="template" :show="open">
       <Dialog as="div" class="relative z-10" @close="open = false">
         <div class="fixed inset-0" />
@@ -43,6 +43,7 @@
                         </div>
                       </div>
                       <div class="relative mt-6 flex-1 px-4 sm:px-6"></div>
+                   
                       <div class="mt-2">
                         <label
                           for="email"
@@ -80,7 +81,7 @@
                             rows="4"
                             name="comment"
                             id="comment"
-                            v-model="formdata.specification"
+                            v-model="formdata.specifications"
                             class="block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
                           />
                         </div>
@@ -108,6 +109,30 @@
                           id="email"
                           class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         />
+                        <label
+                          for="email"
+                          class="block text-sm font-medium leading-6 text-gray-900"
+                          >listing_type_name</label
+                        >
+                        <input
+                          type="text"
+                          v-model="formdata.listing_type_name"
+                          name="email"
+                          id="email"
+                          class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        />
+                        <label
+                          for="email"
+                          class="block text-sm font-medium leading-6 text-gray-900"
+                          >default_image_url</label
+                        >
+                        <input
+                          type="text"
+                          v-model="formdata.age_of_the_project"
+                          name="email"
+                          id="email"
+                          class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        />
                       </div>
 
                       <div class="flex justify-center m-10">
@@ -118,12 +143,13 @@
                         >
                           Cancel
                         </button>
+                        <div  @click="open = false">
                         <button
                           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-                          @click="postData(), open=false"
+                          @click="postData1"
                         >
                           Add
-                        </button>
+                        </button></div>
                       </div>
                     </div>
                   </div>
@@ -152,27 +178,36 @@ import {
 } from "@headlessui/vue";
 
 const props = defineProps({
-  open: Boolean,
-  formdata: Object,
+  open:{ type :Boolean,default:false} ,
+  formdata:{type: Object,
   default: () => [],
+  }
 });
-const emits=defineEmits(["post-data"])
-const postData = async () => {
-  console.log("hello")
+const emits = defineEmits(["post-data"])
+const postData1 = async () => {
+ open.value= false;
+ console.log(open.value)
+  console.log("hello",)
   let form={
-  name:props.formdata.name,
-  details:props.formdata.details,
-  specification:props.formdata.specification,
-  logo_url:propsformdata.logo_url,
-  default_image_url:props.formdata.default_image_url,
-  category: "Residential",
-  sub_category: "Apartment",
-  status: "Fully Constructed",
-  rera_approved: true,
-  approve_status: "Active"
-
- }
+      name: props.formdata.name,
+    listing_type_name: props.formdata.listing_type_name,
+    category: "Residential",
+    sub_category: "Apartment",
+    status: "Fully Constructed",
+    details: props.formdata.details,
+    specifications:props.formdata.specifications,
+    possession_date: "2023-04-08",
+    age_of_the_project: props.formdata.age_of_the_project,
+    logo_url:props.formdata.logo_url,
+    total_project_area: 0.0,
+    metric: "sq.ft",
+    default_image_url: props.formdata.default_image_url,
+    visit_count: 0,
+    rera_approved: true,
+    approve_status: "Active"
+}
    emits("post-data", form);
+   console.log("form",form)
   
 };
 </script>
