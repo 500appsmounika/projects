@@ -124,7 +124,7 @@
                         <label
                           for="email"
                           class="block text-sm font-medium leading-6 text-gray-900"
-                          >default_image_url</label
+                          >age_of_the_project</label
                         >
                         <input
                           type="text"

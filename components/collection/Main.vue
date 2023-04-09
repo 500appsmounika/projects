@@ -1,66 +1,104 @@
 <template>
+  <!--add projects button-->
+  <button
+    type="button"
+    class="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+    @click="opensidebar()"
+  >
+    Add Project
+  </button>
+  <CollectionList :templatedata="templateData" @deleteData="deleteData" @editData="updatetemplateData"></CollectionList>
 
-      <button 
-        type="button"
-        class="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100" @click="opensidebar()"
-      >
-        Add Project
-      </button>
-      <CollectionList :templateData="templateData"></CollectionList>
-      <CollectionAdd v-if="open" :open="open" :formdata="formdata" @post-data="postData"></CollectionAdd>
+  <CollectionAdd
+    v-if="open"
+    :open="open"
+    :formdata="formdata"
+    @post-data="postData"
+  ></CollectionAdd>
+  <CollectionEdit :editdata="editdata" :edit="edit"  @savedata="postData"></CollectionEdit>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
-import {
-XMarkIcon,
-PencilSquareIcon,
-TrashIcon,
-} from "@heroicons/vue/24/outline";
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
+//define the props
 const open = ref(false);
-const name =ref('');
-const details=ref('')
-const specifications=ref('')
-const logo_url=ref('')
-const default_image_url=ref('')
+const edit=ref(false)
+const templateData=ref([])
+const editdata=ref({})
  const formdata={
   name:"",
   details:"",
-  specification:"",
+  specifications:"",
   logo_url:"",
-  default_image_url:""
+  default_image_url:"",
+  age_of_the_project:"",
+  listing_type_name:""
 
  }
- const postData = async (form) => {
-// console.log("updateTemplate(form);>>>>>>>",templateData)
-  // if (form.uid) return updateTemplate(form)
-  const { data: templateData } = await useAuthLazyFetch(
-  "https://v1-orm-gharpe.mercury.infinity-api.net/api/projects/?offset=0&limit=100&sort_column=id&sort_direction=desc"
-);
+
+//post and edit
+ const postData = async (form: any) => {
+  if(form.uid){
+    console.log("meesa",form)
+    const editoptions={ body: form};
+    await useAuthLazyFetchPut(`https://v1-orm-gharpe.mercury.infinity-api.net/api/projects/${form.uid}`,editoptions);
+    edit.value=false;
+    const { data: response } = await useAuthLazyFetch(
+      "https://v1-orm-gharpe.mercury.infinity-api.net/api/projects/?offset=0&limit=100&sort_column=id&sort_direction=desc", "" );
+      templateData.value = response.value;
+
+  }else{
   let options = {
+    
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
       Authorization:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1IjoiYmZlOTY3MDc0YzJhNGVlNDhiODFlYWU1ZmU5ZThhMjkiLCJkIjoiMTY4MDA4MSIsInIiOiJzYSIsInAiOiJmcmVlIiwiYSI6ImZpbmRlci5pbyIsImwiOiJ1czEiLCJleHAiOjE2ODMyNzkyNzB9._HklK6rl9AWu3mp4kRdrOIsxyEP-jNpG7kgF3K-5GlA",
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1IjoiYmZlOTY3MDc0YzJhNGVlNDhiODFlYWU1ZmU5ZThhMjkiLCJkIjoiMTY4MDA4MSIsInIiOiJzYSIsInAiOiJmcmVlIiwiYSI6ImZpbmRlci5pbyIsImwiOiJ1czEiLCJleHAiOjE2ODMyNzkyNzB9._HklK6rl9AWu3mp4kRdrOIsxyEP-jNpG7kgF3K-5GlA",
     },
-    body: form,
+    body:form
+    
   };
-  const { data: addTemplateData } = await useAuthLazyFetchPost(
+  const data = await useAuthLazyFetchPost(
     "https://v1-orm-gharpe.mercury.infinity-api.net/api/projects/",
     options
   );
-  templateData.value.unshift(form);
-  formsData.value = {};
+  templateData.value=data.data._rawValue
+  console.log("templateData",templateData)
+}}
+//Prefill
+const updatetemplateData = (data: any) => {
+  console.log("here in main",data);
+  
+  edit.value = true;
+  editdata.value = data;
+  console.log("here in main",editdata.value);
+
 };
+//Get
+const getData = useLazyFetch(
+  "https://v1-orm-gharpe.mercury.infinity-api.net/api/projects/?offset=0&limit=100&sort_column=id&sort_direction=desc"
+);
+templateData.value = getData.data._rawValue;
+
+//Delete
+const deleteData = async (data: any) => {
+  const doption={body: data};
+  await useAuthLazyFetchDelete(`https://v1-orm-gharpe.mercury.infinity-api.net/api/projects/${data.uid}`,
+  doption);
+  const { data: response } = await useAuthLazyFetch(
+    "https://v1-orm-gharpe.mercury.infinity-api.net/api/projects/?offset=0&limit=100&sort_column=id&sort_direction=desc",
+    ""
+  );
+  templateData.value = response.value;
+ 
+};
+
+
+
+
 function opensidebar() {
   open.value = !open.value;
+  edit.value = !edit.value;
 }
 </script>
