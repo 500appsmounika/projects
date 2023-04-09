@@ -93,12 +93,8 @@ const deleteData = async (data: any) => {
   templateData.value = response.value;
  
 };
-
-
-
-
 function opensidebar() {
   open.value = !open.value;
-  edit.value = !edit.value;
+ 
 }
 </script>

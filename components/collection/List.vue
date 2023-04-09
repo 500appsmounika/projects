@@ -1,4 +1,5 @@
 <template>
+  <!--show the projects-->
   <div>
     <div>
       <div class="bg-white shadow-md rounded-md p-4">
@@ -6,11 +7,12 @@
           <thead>
             <tr>
               <th class="px-4 py-2 text-left">Name</th>
-              <th class="px-4 py-2 text-left">listing_type_name</th>
+              <th class="px-4 py-2 text-left">Details</th>
               <th class="px-4 py-2 text-left">specifications</th>
-              <th class="px-4 py-2 text-left">age_of_the_project</th>
               <th class="px-4 py-2 text-left">logo_url</th>
               <th class="px-4 py-2 text-left">default_image_url</th>
+              <th class="px-4 py-2 text-left">listing type name</th>
+              <th class="px-4 py-2 text-left">age_of_the_project</th>
             </tr>
           </thead>
 
@@ -21,11 +23,12 @@
               :key="index"
             >
               <td class="px-4 py-2">{{ template.name }}</td>
-              <td class="px-4 py-2">{{ template.listing_type_name }}</td>
+              <td class="px-4 py-2">{{ template.details }}</td>
               <td class="px-4 py-2">{{ template.specifications }}</td>
-              <td class="px-4 py-2">{{ template.age_of_the_project }}</td>
               <td class="px-4 py-2">{{ template.logo_url }}</td>
               <td class="px-4 py-2">{{ template.default_image_url }}</td>
+              <td class="px-4 py-2">{{ template.listing_type_name }}</td>
+              <td class="px-4 py-2">{{ template.age_of_the_project }}</td>
               <td class="px-4 py-2">
                       <div class="align item-center justify-between">
                 <PencilSquareIcon
@@ -40,7 +43,7 @@
                   name="bytesize:trash"
                   size="16"
                   class="h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500:text-red-600"
-                  @click="emits('deleteData',template)"
+                  @click="deleteData(template)"
                 >
                 </TrashIcon></div>
               </td>
@@ -57,10 +60,15 @@ const props = defineProps({
   templatedata: Array,
   default: () => [],
 });
+//define the emits
 const emits = defineEmits(['editData','deleteData','updateData']);
-
+//emits the edit data
 const editData =(data) =>{
   console.log("here in edit",data);
   emits('editData',data)
+}
+//emits the delete data
+const deleteData=(data)=>{
+  emits('deleteData',data)
 }
 </script>

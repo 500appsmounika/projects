@@ -1,5 +1,5 @@
 <template>
-  <!-- v-else-if="open" -->
+  <!-- add projects details -->
   <div  v-if="open">
     <TransitionRoot as="template" :show="open">
       <Dialog as="div" class="relative z-10" @close="open = false">
@@ -176,13 +176,14 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
-
+//define the props
 const props = defineProps({
   open:{ type :Boolean,default:false} ,
   formdata:{type: Object,
   default: () => [],
   }
 });
+//define the emits
 const emits = defineEmits(["post-data"])
 const postData1 = async () => {
  open.value= false;
